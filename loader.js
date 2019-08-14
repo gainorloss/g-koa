@@ -30,7 +30,7 @@ function loadRouter(app) {
         module = typeof module === 'function' ? module(app) : module;
         Object.keys(module).forEach(key => {
             const [method, url] = key.split(' ');
-            router[method](url, async ctx => {
+            router[method](url,  ctx => {
                 app.ctx = ctx;
                 module[key](app);
             });
