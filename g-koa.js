@@ -22,12 +22,12 @@ module.exports = class GKoa {
         port = port || 3000;
         if (cluster.isMaster) {
             for (let index = 0; index < os.cpus().length; index++) {
-                const worker = cluster.fork();
-                this.$workers.push({ workerid:worker.id,pid:process.pid});
+                const fork = cluster.fork();
+                this.$workers.push({ workerid:fork.id,pid:process.pid});
             }
             cluster.on('error',worker=>{
-                const worker = cluster.fork();
-                this.$workers.push({ workerid:worker.id,pid:process.pid});
+                const fork = cluster.fork();
+                this.$workers.push({ workerid:fork.id,pid:process.pid});
             });
             console.log(this.$workers);
         } else {
