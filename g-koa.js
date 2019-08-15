@@ -9,10 +9,9 @@ module.exports = class GKoa {
         this.$middleware = loadMiddleware(this);
         this.$service = loadService(this);
         this.$controller = loadController();
-
+        
         this.$router = loadRouter(this);
         this.$app.use(this.$router.routes());
-
         this.$schedule = loadSchedule();
 
         this.$workers = {};

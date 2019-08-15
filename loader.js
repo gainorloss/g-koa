@@ -30,8 +30,21 @@ function loadRouter(app) {
         module = typeof module === 'function' ? module(app) : module;
         Object.keys(module).forEach(key => {
             const [method, url] = key.split(' ');
-            router[method](url,  ctx => {
+            const _url = `/${prefix}${url}`;
+            router[method](_url, ctx => {
                 app.ctx = ctx;
+                module[key](app);
+            });
+        })
+    });
+    load('api', (fileName, module) => {
+        module = typeof module === 'function' ? module(app) : module;
+        Object.keys(module).forEach(key => {
+            const [method, url] = key.split(' ');
+            const _url = `/api/${fileName}${url}`;
+            router[method](_url, ctx => {
+                app.ctx = ctx;
+                app.ctx.type = 'json';
                 module[key](app);
             });
         })
@@ -80,4 +93,4 @@ function loadSchedule() {
     });
 }
 
-module.exports = { loadRouter, loadSchedule, loadController,loadService,loadMiddleware };
+module.exports = { loadRouter, loadSchedule, loadController, loadService, loadMiddleware };
