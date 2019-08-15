@@ -31,9 +31,9 @@ function loadRouter(app) {
         Object.keys(module).forEach(key => {
             const [method, url] = key.split(' ');
             const _url = `/${prefix}${url}`;
-            router[method](_url, ctx => {
+            router[method](_url, async ctx => {
                 app.ctx = ctx;
-                module[key](app);
+                await module[key](app);
             });
         })
     });
@@ -42,10 +42,10 @@ function loadRouter(app) {
         Object.keys(module).forEach(key => {
             const [method, url] = key.split(' ');
             const _url = `/api/${fileName}${url}`;
-            router[method](_url, ctx => {
+            router[method](_url, async ctx => {
                 app.ctx = ctx;
                 app.ctx.type = 'json';
-                module[key](app);
+                await module[key](app);
             });
         })
     });

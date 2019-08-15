@@ -1,3 +1,3 @@
-module.exports=app=>({
-    'get /:id':app.$controller.tmall.price
+module.exports=async app=>({
+    'get /:id':await app.$controller.tmall.price
 })

@@ -3,6 +3,6 @@
 //         app.ctx.body = 'index';
 //     }
 // }
-module.exports=app=>({
-    'get /':app.$controller.index.index
+module.exports =async  app => ({
+    'get /': app.$controller.index.index
 });
