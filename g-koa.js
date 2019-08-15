@@ -15,25 +15,30 @@ module.exports = class GKoa {
 
         this.$schedule = loadSchedule();
 
-        this.$workers = [];
+        this.$workers = {};
     }
 
     start(port) {
         port = port || 3000;
         if (cluster.isMaster) {
+            cluster.on('death', function (worker) {
+                worker = cluster.fork();
+                this.$workers[worker.process.pid]=worker;
+            })
             for (let index = 0; index < os.cpus().length; index++) {
                 const fork = cluster.fork();
-                this.$workers.push({ workerid:fork.id,pid:process.pid});
+                this.$workers[fork.process.id]=fork;
             }
-            cluster.on('error',worker=>{
-                const fork = cluster.fork();
-                this.$workers.push({ workerid:fork.id,pid:process.pid});
-            });
-            console.log(this.$workers);
         } else {
             this.$app.listen(port, () => {
-                console.log(`server start at: http://localhost:${port},worker id:${cluster.worker.id},pid:${process.pid}`);
+                console.log(`server start at: http://localhost:${port},worker id:${cluster.worker.id},pid:${cluster.worker.process.pid}`);
             })
         }
+        cluster.on('SIGTERM', () => {
+            Object.keys(this.$workers).forEach(pid => {
+                process.kill(pid);
+            });
+            process.exit(1);
+        });
     }
 }
