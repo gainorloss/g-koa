@@ -2,6 +2,8 @@ const Koa = require('koa');
 const { loadRouter, loadSchedule, loadController, loadService, loadMiddleware } = require('./loader');
 const os = require('os');
 const cluster = require('cluster');
+const wechat=require('co-wechat');
+const wechatConf=require('./wechat.conf');
 
 module.exports = class GKoa {
     constructor(conf) {
@@ -12,6 +14,10 @@ module.exports = class GKoa {
         
         this.$router = loadRouter(this);
         this.$app.use(this.$router.routes());
+        this.$app.use(wechat({...wechatConf}).middleware(async(message,ctx)=>{
+            console.log(message);
+            return "Welcome wechatmedia";
+        }));
         this.$schedule = loadSchedule();
 
         this.$workers = {};
